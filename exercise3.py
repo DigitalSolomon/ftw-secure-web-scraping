@@ -9,7 +9,7 @@ dirpath = os.getcwd()
 filepath = dirpath + '/chromedriver'
 print('Path to Driver: ' + filepath)
 browser = webdriver.Chrome(executable_path = filepath)
-browser.get('AmazonListingURLHere')
+browser.get('JobOpportunitiesListURLHere')
 
 try:
     # Dismiss initial popup
@@ -18,16 +18,9 @@ try:
 
     element.click()
 
-    # Click on Reviews
-    element = WebDriverWait(browser,5).until(
-         EC.presence_of_element_located((By.XPATH, 'FillThisIn')))
-
-    element.click()
-
-
 except TimeoutException:
     print("Failed to load element")
-finally:
-    browser.quit()
+#finally:
+    #browser.quit() - Normally we would quit here, but we'll leave it open so you can see the results of your code longer
 
 
