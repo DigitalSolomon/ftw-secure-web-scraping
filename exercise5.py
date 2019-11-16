@@ -10,50 +10,56 @@ conn = pymysql.connect(host='127.0.0.1',user='root', passwd = 'YourPasswordHere'
 charset = 'utf8')
 cur = conn.cursor()
 cur.execute("USE scraperdb")
-def store(id, date, stars, title, content):
+def store(agency, region, position, plantilla, postingDate, closingDate):
     # finish this mysql query
-   cur.execute('INSERT INTO reviews ....
+   cur.execute('INSERT INTO listings ....
    cur.connection.commit()
 
 dirpath = os.getcwd()
 filepath = dirpath + '/chromedriver'
 print('Path to Driver: ' + filepath)
 browser = webdriver.Chrome(executable_path = filepath)
-browser.get('AmazonListingURLHere')
+browser.get('JobOpportunitiesListURLHere')
 
 try:
     # Wait as long as required, or maximum of 5 sec for element to appear
     # If successful, retrieves the element
     element = WebDriverWait(browser,5).until(
-         EC.presence_of_element_located((By.XPATH, 'FillThisIn')))
+        EC.presence_of_element_located((By.XPATH, 'FillThisIn')))
 
     element.click()
 
-    element = WebDriverWait(browser,5).until(
-         EC.presence_of_element_located((By.XPATH, 'FillThisIn')))
-
-    element.click()
-
-    reviewsElement = WebDriverWait(browser, 5).until(
+    # Find where the element that contains all of the listings
+    listingsElement = WebDriverWait(browser, 5).until(
         EC.presence_of_element_located((By.XPATH, 'FillThisIn')))
     
-    reviewChildren = reviewsElement.find_elements_by_class_name("FillThisIn")
-    for review in reviewChildren:
-        reviewId = review.get_attribute('id')
-        date = review.find_element_by_class_name('review-date').get_attribute('innerHTML')
-        stars = review.find_element_by_class_name('a-link-normal').get_attribute('title')
-        title = review.find_element_by_xpath('.//div[2]/a[2]/span').get_attribute('innerHTML')
-        reviewContent = review.find_element_by_xpath('.//div[4]/span/div/div[1]/span').get_attribute('innerHTML')
-        print(reviewId)
-        print(title)
-        print(date)
-        print(stars)
-        print(reviewContent)
-        print('#############')
+    # Then find all of the listings by using the class name found in all of the individual listings
+    listings = listingsElement.find_elements(By.TAG_NAME, "tr") # get all of the rows in the table
+    for row in listings:
+        # Get the columns from the table row        
+        agency = row.find_elements(By.TAG_NAME, "td")[0] #note: index starts from 0, so 0 is 1st column, 1 is 2nd column, 2 is 3rd column, etc
+        print agency.text #prints text from the element
+
+        region = row.find_elements(By.TAG_NAME, "td")[1]
+        print region.text
+
+        positionTitle = row.find_elements(By.TAG_NAME, "td")[2]
+        print positionTitle.text
+
+        plantilla = row.find_elements(By.TAG_NAME, "td")[3]
+        print plantilla.text
+
+        postingDate = row.find_elements(By.TAG_NAME, "td")[3]
+        print postingDate.text
+
+        closingDate = row.find_elements(By.TAG_NAME, "td")[4]
+        print closingDate.text
+
+        print "######################"
         # call your database insert function here
 
 except TimeoutException:
-    print("Failed to load search bar at www.google.com")
+    print("Failed to load")
 finally:
     browser.quit()
 
